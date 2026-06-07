@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Portal | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <!-- Localization Module -->
+    <script type="module" src="js/lang/i18n.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+        <div class="glow-circle glow-circle-3"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
+                <span data-i18n="logo_title">WellnessInsight</span>
+            </a>
+            
+            <nav class="sidebar-nav">
+                <a href="doctor-dashboard.html" class="nav-item active" data-i18n="sidebar_doctor_panel"><i class="fa-solid fa-shield-halved"></i> Doctor Panel</a>
+                <a href="#doctorPatientsDirectoryTable" class="nav-item" data-i18n="sidebar_patient_directory"><i class="fa-solid fa-address-book"></i> Patient Directory</a>
+                <a href="#doctorAppointmentsHistoryTable" class="nav-item" data-i18n="sidebar_appointments_console"><i class="fa-solid fa-calendar-check"></i> Appointments Console</a>
+                <a href="profile.html" class="nav-item" data-i18n="sidebar_profile"><i class="fa-solid fa-user-doctor"></i> My Profile</a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile-badge">
+                    <div class="user-avatar" id="sidebarAvatar">DR</div>
+                    <div class="user-info">
+                        <span class="user-name" id="sidebarName">Retrieving Profile...</span>
+                        <span class="user-role" data-i18n="sidebar_role_doctor">Clinical Specialist</span>
+                    </div>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn" style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);" data-i18n="sign_out"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper Panel -->
+        <main class="main-wrapper">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="welcomeDoctorGreeting" data-i18n="welcome_specialist_greeting">Welcome, Specialist</h1>
+                    <p data-i18n="monitoring_vitals_logs">Monitoring metabolic vitals and outpatient diagnostics logs</p>
+                </div>
+                <div class="header-actions">
+                    <!-- Notification Bell Dropdown -->
+                    <div class="notification-bell-container" style="position: relative; margin-right: 15px;">
+                        <button id="notificationBellBtn" style="background: transparent; border: none; font-size: 1.3rem; color: var(--text-secondary); cursor: pointer; position: relative; padding: 5px; outline: none; transition: var(--transition-smooth);">
+                            <i class="fa-regular fa-bell"></i>
+                            <span id="notificationBadge" style="display: none; position: absolute; top: 0; right: 0; background: var(--color-danger); color: white; border-radius: 50%; font-size: 0.65rem; font-weight: 700; width: 16px; height: 16px; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);">0</span>
+                        </button>
+                        <div id="notificationDropdown" style="display: none; position: absolute; top: 40px; right: 0; width: 320px; background: var(--bg-card); backdrop-filter: var(--glass-blur) var(--glass-saturate); border: 1px solid var(--border-card); border-radius: var(--radius-md); box-shadow: var(--shadow-premium); padding: 15px; z-index: 1000; max-height: 400px; overflow-y: auto;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <span data-i18n="critical_risk_alerts">Emergency Alerts</span>
+                                <button id="btnMarkNotificationsRead" style="background: transparent; border: none; font-size: 0.75rem; color: var(--color-primary); cursor: pointer; font-weight: 600;" data-i18n="clear_all">Clear All</button>
+                            </h4>
+                            <div id="notificationsList" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 20px 0;" data-i18n="no_new_alerts">No new alerts</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selector Dropdown -->
+                    <div class="lang-switcher-container" style="margin-right: 15px;">
+                        <i class="fa-solid fa-globe lang-icon"></i>
+                        <select class="lang-select" aria-label="Select Language">
+                            <option value="en">English</option>
+                            <option value="hi">हिन्दी</option>
+                            <option value="mr">मराठी</option>
+                        </select>
+                    </div>
+
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider">
+                            <span class="slider-icons">
+                                <i class="fa-solid fa-moon"></i>
+                                <i class="fa-solid fa-sun"></i>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+            </header>
+
+            <!-- Clinical Statistics Summary -->
+            <section class="dashboard-grid">
+                
+                <!-- Stat 1: Total Monitored Patients -->
+                <div class="glass-card metric-card primary-hover">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="monitored_registries">Monitored Registries</span>
+                        <div class="metric-icon-box" style="background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="doctorStatPatients">0</span>
+                        <p class="metric-desc" data-i18n="registered_patients_server">Registered patients on server</p>
+                    </div>
+                </div>
+
+                <!-- Stat 2: High Risk Alert Cases -->
+                <div class="glass-card metric-card danger-icon">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="critical_risk_alerts">Critical Risk Alerts</span>
+                        <div class="metric-icon-box">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="doctorStatHighRisk">0</span>
+                        <p class="metric-desc" data-i18n="patients_requiring_followup">Patients requiring outpatient follow-up</p>
+                    </div>
+                </div>
+
+                <!-- Stat 3: Total Completed Scans -->
+                <div class="glass-card metric-card success-icon">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="total_completed_audits">Total Completed Audits</span>
+                        <div class="metric-icon-box">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="doctorStatScans">0</span>
+                        <p class="metric-desc" data-i18n="ai_assessments_completed">AI health assessments completed</p>
+                    </div>
+                </div>
+                
+            </section>
+
+            <!-- Doctor Split Layout -->
+            <section class="content-grid-two-cols">
+                
+                <!-- Left Side: Directory & Appointments -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Patient Directory Panel -->
+                    <div class="glass-card primary-hover">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                            <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 0;" data-i18n="sidebar_patient_directory"><i class="fa-solid fa-address-book" style="color: var(--color-primary);"></i> Patient Directory</h3>
+                            
+                            <!-- Real-time search query box -->
+                            <div class="doctor-search-box">
+                                <i class="fa-solid fa-magnifying-glass doctor-search-icon"></i>
+                                <input type="text" id="searchPatients" class="doctor-search-input" placeholder="Search patient logs by name..." data-i18n-placeholder="search_patient_placeholder">
+                            </div>
+                        </div>
+
+                        <div class="scans-table-container">
+                            <table class="scans-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="register_no">Register No.</th>
+                                        <th data-i18n="patient_name">Patient Name</th>
+                                        <th data-i18n="blood_group">Blood Group</th>
+                                        <th data-i18n="age">Age</th>
+                                        <th data-i18n="last_active">Last Active</th>
+                                        <th data-i18n="health_index">Health Index</th>
+                                        <th data-i18n="risk_severity">Risk Severity</th>
+                                        <th data-i18n="audit">Audit</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doctorPatientsDirectoryTable">
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 40px 0;" data-i18n="retrieving_patient_logs">
+                                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px; display: block;"></i> Retrieving database patient logs...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Management Panel -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;" data-i18n="appointment_management_console"><i class="fa-regular fa-calendar-check" style="color: var(--color-secondary);"></i> Appointment Management Console</h3>
+                        
+                        <div class="scans-table-container" style="max-height: 300px; overflow-y: auto;">
+                            <table class="scans-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="patient_name">Patient Name</th>
+                                        <th data-i18n="requested_date_time">Requested Date & Time</th>
+                                        <th data-i18n="status">Status</th>
+                                        <th data-i18n="auditing_actions">Auditing Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doctorAppointmentsHistoryTable">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px 0;" data-i18n="no_pending_appointments">
+                                            No pending appointment requests.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Side: Doctor Profile & Quick commands -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Specialist Profile Summary -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" data-i18n="practitioner_profile"><i class="fa-solid fa-id-card-clip" style="color: var(--color-accent);"></i> Practitioner Profile</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 18px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-card); padding-bottom: 8px;">
+                                <span style="color: var(--text-secondary);" data-i18n="specialization_label">Specialization:</span>
+                                <strong id="docProfileSpecialization">--</strong>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-card); padding-bottom: 8px;">
+                                <span style="color: var(--text-secondary);" data-i18n="experience_label">Experience:</span>
+                                <strong id="docProfileExperience">--</strong>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-card); padding-bottom: 8px;">
+                                <span style="color: var(--text-secondary);" data-i18n="hospital_clinic_label">Hospital / Clinic:</span>
+                                <strong id="docProfileClinicName">--</strong>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-card); padding-bottom: 8px;">
+                                <span style="color: var(--text-secondary);" data-i18n="license_number_label">License Number:</span>
+                                <strong id="docProfileLicenseNumber">--</strong>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; padding-bottom: 4px;">
+                                <span style="color: var(--text-secondary);" data-i18n="contact_phone_label">Contact Phone:</span>
+                                <strong id="docProfilePhone">--</strong>
+                            </div>
+                        </div>
+                        
+                        <a href="profile.html" class="btn-outline" style="width: 100%; margin-top: 20px;" data-i18n="edit_specialist_profile"><i class="fa-solid fa-user-pen"></i> Edit Specialist Profile</a>
+                    </div>
+
+                    <!-- HIPAA standards details -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 15px;" data-i18n="system_standards"><i class="fa-solid fa-circle-info" style="color: var(--color-primary);"></i> System Standards</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.825rem; line-height: 1.6; margin-bottom: 12px;" data-i18n="hipaa_compliance_text">This platform uses HIPAA-compliant database structures on Google Firebase Cloud Platforms.</p>
+                        <p style="color: var(--text-secondary); font-size: 0.825rem; line-height: 1.6;" data-i18n="encryption_pipeline_text">Client sessions are checked using stateful, encrypted Web Sockets under 256-bit encryption pipelines.</p>
+                    </div>
+
+                </div>
+
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Frosted Overlay patient auditing modal -->
+    <div class="doctor-modal-overlay" id="auditModal" style="display: none; justify-content: center; align-items: center; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);">
+        <div class="doctor-modal-card" style="max-width: 750px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            
+            <div class="doctor-modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-card); padding-bottom: 15px;">
+                <div>
+                    <h3 style="font-size: 1.35rem; margin-bottom: 0;" id="modalPatientName">Auditing Patient Vitals</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.825rem; margin-top: 3px; margin-bottom: 0;" id="modalPatientSub" data-i18n="registered_server_databases">Registered on server databases</p>
+                </div>
+                <button class="close-modal-btn" id="btnExitModal" style="background: transparent; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Tab selectors inside modal -->
+            <div class="auth-tabs" style="margin: 15px 20px; background: rgba(255,255,255,0.02); border-radius: var(--radius-md); padding: 4px; border: 1px solid var(--border-card); display: flex;">
+                <button type="button" class="auth-tab active" id="modalTabVitals" style="padding: 8px; font-size: 0.8rem; flex: 1;" data-i18n="tab_patient_vitals"><i class="fa-solid fa-heart-pulse"></i> Patient Vitals</button>
+                <button type="button" class="auth-tab" id="modalTabReport" style="padding: 8px; font-size: 0.8rem; flex: 1;" data-i18n="tab_report_creator"><i class="fa-solid fa-file-medical"></i> Medical Report Creator</button>
+                <button type="button" class="auth-tab" id="modalTabHistory" style="padding: 8px; font-size: 0.8rem; flex: 1;" data-i18n="tab_health_history"><i class="fa-solid fa-clock-rotate-left"></i> Health History</button>
+            </div>
+            
+            <!-- PANEL 1: Patient Vitals -->
+            <div class="doctor-modal-body active-panel" id="modalPanelVitals" style="padding: 20px;">
+                
+                <!-- Patient Demographics Info grid -->
+                <div class="glass-card" style="padding: 20px; margin-bottom: 25px; background: rgba(255,255,255,0.01);">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 15px; color: var(--color-primary);" data-i18n="demographics"><i class="fa-regular fa-id-badge"></i> Demographics</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; font-size: 0.85rem;">
+                        <div><strong style="color: var(--text-secondary);" data-i18n="gender">Gender:</strong> <span id="modalGender">--</span></div>
+                        <div><strong style="color: var(--text-secondary);" data-i18n="age">Age:</strong> <span id="modalAge">--</span></div>
+                        <div><strong style="color: var(--text-secondary);" data-i18n="blood_group">Blood Group:</strong> <span id="modalBloodGroup">--</span></div>
+                        <div><strong style="color: var(--text-secondary);" data-i18n="phone">Phone:</strong> <span id="modalPhone">--</span></div>
+                        <div><strong style="color: var(--text-secondary);" data-i18n="email">Email:</strong> <span id="modalEmail">--</span></div>
+                    </div>
+                </div>
+
+                <!-- Patient Latest Biometric Scores -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 25px; margin-bottom: 25px;">
+                    
+                    <!-- Vitals readings -->
+                    <div class="glass-card" style="padding: 20px; background: rgba(255,255,255,0.01);">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; color: var(--color-secondary);" data-i18n="latest_vitals"><i class="fa-solid fa-heart-pulse"></i> Latest Vitals</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="bmi_title">Body Mass Index (BMI)</span>: <strong id="modalBmi">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="bp_title">Blood Pressure</span>: <strong id="modalBp">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="sugar_title">Fasting Blood Sugar</span>: <strong id="modalGlucose">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="resting_pulse_rate">Resting Pulse rate</span>: <strong id="modalPulse">--</strong></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Illness Risk Bars -->
+                    <div class="glass-card" style="padding: 20px; background: rgba(255,255,255,0.01);">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; color: var(--color-accent);" data-i18n="illness_risk_index"><i class="fa-solid fa-diagram-project"></i> Illness Risk Index</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.775rem;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;"><span data-i18n="heart_disease_risk">Heart Disease Risk</span><span id="modalRiskHeart">--</span></div>
+                                <div style="height: 5px; border-radius: 3px; background: var(--border-card); overflow:hidden;"><div id="modalRiskHeartBar" style="height:100%; width:0%; background:var(--color-primary); transition: width 0.8s;"></div></div>
+                            </div>
+                            
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;"><span data-i18n="diabetes_risk">Diabetes Risk</span><span id="modalRiskDiabetes">--</span></div>
+                                <div style="height: 5px; border-radius: 3px; background: var(--border-card); overflow:hidden;"><div id="modalRiskDiabetesBar" style="height:100%; width:0%; background:var(--color-accent); transition: width 0.8s;"></div></div>
+                            </div>
+                            
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 2px;"><span data-i18n="stroke_risk">Stroke Risk</span><span id="modalRiskStroke">--</span></div>
+                                <div style="height: 5px; border-radius: 3px; background: var(--border-card); overflow:hidden;"><div id="modalRiskStrokeBar" style="height:100%; width:0%; background:var(--color-danger); transition: width 0.8s;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Auditing Clinical Advice note area -->
+                <div class="glass-card" style="padding: 20px; background: rgba(255,255,255,0.01);">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--color-danger);" data-i18n="add_clinician_notes"><i class="fa-solid fa-pen-clip"></i> Add Clinician Care Notes</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.775rem; margin-bottom: 15px; margin-top: 5px;" data-i18n="appended_notes_desc">Appended notes are posted instantly to the patient's dashboard home under Doctor's Care Notes.</p>
+                    <textarea id="clinicalFeedbackText" class="form-input" style="height: 80px; padding: 12px; resize: none;" placeholder="Type professional clinician instructions, sodium guidelines, exercise targets, or outbound consultation advices..." data-i18n-placeholder="clinical_feedback_placeholder"></textarea>
+                </div>
+            </div>
+
+            <!-- PANEL 2: Clinical Medical Report Creator -->
+            <div class="doctor-modal-body" id="modalPanelReport" style="display: none; padding: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start;">
+                    <!-- Reference Summary (Left Column) -->
+                    <div class="glass-card" style="padding: 20px; background: rgba(255,255,255,0.01); border-color: rgba(59, 130, 246, 0.15);">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; color: var(--color-primary); display: flex; align-items: center; gap: 8px;" data-i18n="diagnostic_reference"><i class="fa-solid fa-file-medical"></i> Diagnostic Reference</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.825rem; border-bottom: 1px dashed var(--border-card); padding-bottom: 12px; margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="bp_title">Blood Pressure</span>: <strong id="refBp">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="sugar_title">Fasting Blood Sugar</span>: <strong id="refGlucose">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="resting_pulse_rate">Resting Pulse rate</span>: <strong id="refPulse">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-secondary);" data-i18n="bmi_title">Body Mass Index (BMI)</span>: <strong id="refBmi">--</strong></div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.825rem; border-bottom: 1px dashed var(--border-card); padding-bottom: 12px; margin-bottom: 12px;">
+                            <strong style="color: var(--text-secondary);" data-i18n="reported_symptoms">Reported Symptoms:</strong>
+                            <p id="refSymptoms" style="color: var(--text-primary); font-style: italic; margin-bottom: 0; line-height: 1.4;">--</p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem;">
+                            <strong style="color: var(--text-secondary);" data-i18n="ai_risk_predictions">AI Risk Predictions:</strong>
+                            <div style="display: flex; justify-content: space-between;"><span data-i18n="heart_disease_risk">Heart Disease Risk</span>: <strong id="refRiskHeart" style="color: var(--color-primary);">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span data-i18n="diabetes_risk">Diabetes Risk</span>: <strong id="refRiskDiabetes" style="color: var(--color-accent);">--</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span data-i18n="stroke_risk">Stroke Risk</span>: <strong id="refRiskStroke" style="color: var(--color-danger);">--</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Report Form (Right Column) -->
+                    <form id="createReportForm" style="margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="reportDiagnosis" style="font-size: 0.8rem; margin-bottom: 4px;" data-i18n="clinical_diagnosis">Clinical Diagnosis</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-stethoscope form-input-icon" style="font-size: 0.85rem;"></i>
+                                <input type="text" id="reportDiagnosis" class="form-input" placeholder="e.g. Stage 1 Hypertension with Borderline Hyperglycemia" required style="padding: 8px 12px 8px 36px; font-size: 0.85rem;" data-i18n-placeholder="clinical_diagnosis_placeholder">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="reportPrescription" style="font-size: 0.8rem; margin-bottom: 4px;" data-i18n="rx_treatment_prescription">Rx Treatment & Prescriptions (One per line)</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-prescription form-input-icon" style="font-size: 0.85rem;"></i>
+                                <textarea id="reportPrescription" class="form-input" style="height: 80px; padding: 8px 8px 8px 36px; resize: none; font-size: 0.85rem;" placeholder="e.g. Metformin 500mg - 1 tablet daily with lunch&#10;Lisinopril 10mg - 1 tablet daily in the morning" required data-i18n-placeholder="rx_placeholder"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="reportRecommendations" style="font-size: 0.8rem; margin-bottom: 4px;" data-i18n="lifestyle_recommendations">Dietary, Exercise & Lifestyle Recommendations</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-clipboard-check form-input-icon" style="font-size: 0.85rem;"></i>
+                                <textarea id="reportRecommendations" class="form-input" style="height: 80px; padding: 8px 8px 8px 36px; resize: none; font-size: 0.85rem;" placeholder="e.g. Exercise 30 minutes daily. Reduce cooking salt. Limit refined sugar intake." required data-i18n-placeholder="lifestyle_placeholder"></textarea>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                            <button type="submit" class="btn-primary" id="btnPublishReport" style="padding: 8px 20px; font-size: 0.85rem;" data-i18n="publish_specialist_report"><i class="fa-solid fa-share-from-square"></i> Publish Specialist Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PANEL 3: Health History Timeline -->
+            <div class="doctor-modal-body" id="modalPanelHistory" style="display: none; padding: 20px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 15px; color: var(--color-primary);" data-i18n="tab_health_history"><i class="fa-solid fa-clock-rotate-left"></i> Historical Patient Assessments</h4>
+                <div class="scans-table-container" style="max-height: 350px; overflow-y: auto;">
+                    <table class="scans-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="assessment_date">Scan Date</th>
+                                <th data-i18n="health_score">Health Index</th>
+                                <th data-i18n="primary_clinical_concern">Concern</th>
+                                <th data-i18n="risk_classification">Severity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalPatientHistoryTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px 0;">No prior assessments on catalog.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="doctor-modal-footer" style="border-top: 1px solid var(--border-card); padding: 15px 20px; display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button class="btn-outline" id="btnCancelModal" style="padding: 8px 18px; font-size: 0.85rem;" data-i18n="close">Close</button>
+                <button type="button" id="btnSaveAuditNotes" class="btn-primary" style="padding: 8px 20px; font-size: 0.85rem;" data-i18n="save_vitals_notes"><i class="fa-regular fa-paper-plane"></i> Save Vitals Notes</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Frosted Reschedule & Consultation Modal -->
+    <div class="doctor-modal-overlay" id="consultationModal" style="display: none; justify-content: center; align-items: center; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);">
+        <div class="doctor-modal-card" style="max-width: 480px; width: 90%;">
+            <div class="doctor-modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-card); padding-bottom: 15px;">
+                <div>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0;" data-i18n="consultation_details">Consultation Details</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px; margin-bottom: 0;" data-i18n="schedule_telehealth_resources">Schedule consultations and telehealth resources</p>
+                </div>
+                <button class="close-modal-btn" id="btnExitConsultationModal" style="background: transparent; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="doctor-modal-body" style="padding: 20px 0;">
+                <form id="consultationDetailsForm">
+                    <input type="hidden" id="consultationAppId">
+                    
+                    <div class="form-group">
+                        <label for="consultationDate" data-i18n="consultation_date_time_optional">Consultation Date & Time (Optional Reschedule)</label>
+                        <div class="form-input-container">
+                            <i class="fa-regular fa-clock form-input-icon"></i>
+                            <input type="datetime-local" id="consultationDate" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consultationNotes" data-i18n="consultation_notes">Consultation / Practitioner Notes</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-pen-nib form-input-icon"></i>
+                            <input type="text" id="consultationNotes" class="form-input" placeholder="e.g. Please bring prior metabolic reports." data-i18n-placeholder="consultation_notes_placeholder">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consultationVideo" data-i18n="video_telehealth_link">Video Telehealth Room Link</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-video form-input-icon"></i>
+                            <input type="url" id="consultationVideo" class="form-input" placeholder="e.g. https://wellnessinsight.telehealth.live/room/XYZ" data-i18n-placeholder="video_telehealth_placeholder">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="doctor-modal-footer" style="border-top: 1px solid var(--border-card); padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn-outline" id="btnCancelConsultationModal" style="padding: 8px 18px; font-size: 0.85rem;" data-i18n="cancel">Cancel</button>
+                <button type="submit" form="consultationDetailsForm" class="btn-primary" id="btnSaveConsultationDetails" style="padding: 8px 20px; font-size: 0.85rem;" data-i18n="approve_sync_details"><i class="fa-regular fa-calendar-check"></i> Approve & Sync Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/doctor-dashboard.js"></script>
+    <!-- AI Chatbot Integration -->
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

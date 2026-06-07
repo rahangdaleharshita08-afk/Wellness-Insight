@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+        <div class="glow-circle glow-circle-3"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
+                <span>WellnessInsight</span>
+            </a>
+            
+            <nav class="sidebar-nav" id="profileSidebarNav">
+                <!-- Populated dynamically based on authenticated role -->
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="assessment.html" class="nav-item"><i class="fa-solid fa-stethoscope"></i> Health Wizard</a>
+                <a href="analytics.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Risk Analytics</a>
+                <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user-doctor"></i> User Profile</a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile-badge">
+                    <div class="user-avatar" id="sidebarAvatar">--</div>
+                    <div class="user-info">
+                        <span class="user-name" id="sidebarName">Retrieving Profile...</span>
+                        <span class="user-role" id="sidebarRole">Patient Member</span>
+                    </div>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn" style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper Panel -->
+        <main class="main-wrapper">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1>My Clinical Profile</h1>
+                    <p>Manage personal details, biological baselines, and assessment logs</p>
+                </div>
+                <div class="header-actions">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider">
+                            <span class="slider-icons">
+                                <i class="fa-solid fa-moon"></i>
+                                <i class="fa-solid fa-sun"></i>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+            </header>
+
+            <!-- Profile Layout Panels Grid -->
+            <section style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;" id="profileLayout">
+                
+                <!-- Left Side: Forms and Details -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Edit Profile Card -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-user-pen" style="color: var(--color-primary);"></i> Edit Personal Details</h3>
+                        
+                        <form id="editProfileForm">
+                            <input type="hidden" id="profileRole" value="patient">
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="profileName">Full Name</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-regular fa-user form-input-icon"></i>
+                                        <input type="text" id="profileName" class="form-input" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profilePhone">Phone Number</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-solid fa-phone form-input-icon"></i>
+                                        <input type="tel" id="profilePhone" class="form-input" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Patient-Specific Profile fields -->
+                            <div id="patientProfileFields">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profileAge">Age (Years)</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-regular fa-calendar form-input-icon"></i>
+                                            <input type="number" id="profileAge" class="form-input" min="1" max="120">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="profileGender">Gender</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-venus-mars form-input-icon"></i>
+                                            <select id="profileGender" class="form-input">
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profileBloodGroup">Blood Group</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-droplet form-input-icon" style="color: var(--color-danger);"></i>
+                                            <select id="profileBloodGroup" class="form-input">
+                                                <option value="A+">A+</option>
+                                                <option value="A-">A-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="AB-">AB-</option>
+                                                <option value="O+">O+</option>
+                                                <option value="O-">O-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="visibility: hidden;"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="profileAddress">Residential Address</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-solid fa-map-location-dot form-input-icon"></i>
+                                        <input type="text" id="profileAddress" class="form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profileMedicalHistory">Pre-existing Medical History</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-solid fa-notes-medical form-input-icon"></i>
+                                        <textarea id="profileMedicalHistory" class="form-input" style="height: 80px; padding: 12px 16px 12px 46px; resize: none;" placeholder="e.g. Asthma, High Blood Pressure, Penicillin Allergy..."></textarea>
+                                    </div>
+                                </div>
+
+                                <h4 style="margin: 25px 0 15px 0; color: var(--color-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-truck-medical"></i> Emergency Contact Information</h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profileEmergencyName">Contact Full Name</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-regular fa-id-badge form-input-icon"></i>
+                                            <input type="text" id="profileEmergencyName" class="form-input" placeholder="e.g. Sarah Doe">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileEmergencyRelation">Relationship</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-people-arrows form-input-icon"></i>
+                                            <input type="text" id="profileEmergencyRelation" class="form-input" placeholder="e.g. Spouse, Parent">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileEmergencyPhone">Emergency Phone</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-phone form-input-icon" style="color: var(--color-danger);"></i>
+                                            <input type="tel" id="profileEmergencyPhone" class="form-input" placeholder="e.g. +1 555-0199">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Doctor-Specific Profile fields -->
+                            <div id="doctorProfileFields" style="display: none;">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profileSpecialization">Specialization</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-user-doctor form-input-icon"></i>
+                                            <input type="text" id="profileSpecialization" class="form-input" placeholder="e.g. Cardiologist">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="profileExperience">Experience (Years)</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-hourglass-half form-input-icon"></i>
+                                            <input type="number" id="profileExperience" class="form-input" placeholder="e.g. 12" min="0" max="60">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="profileQualification">Clinical Qualifications</label>
+                                        <div class="form-input-container">
+                                            <i class="fa-solid fa-graduation-cap form-input-icon"></i>
+                                            <input type="text" id="profileQualification" class="form-input" placeholder="e.g. MD, PhD, FACC">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="visibility: hidden;"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="profileClinicName">Hospital / Clinic Name</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-solid fa-hospital form-input-icon"></i>
+                                        <input type="text" id="profileClinicName" class="form-input" placeholder="Clinic Name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="profileLicenseNumber">Medical License Number</label>
+                                    <div class="form-input-container">
+                                        <i class="fa-solid fa-id-card form-input-icon"></i>
+                                        <input type="text" id="profileLicenseNumber" class="form-input" placeholder="License Code">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                                <button type="submit" class="btn-primary" id="btnSaveProfile"><i class="fa-regular fa-floppy-disk"></i> Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Medical baseline Vitals Profile Card (Only for Patient) -->
+                    <div class="glass-card primary-hover" id="baselineVitalsCard">
+                        <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-id-card-clip" style="color: var(--color-secondary);"></i> Baseline Biological Metrics</h3>
+                        
+                        <div class="form-grid" style="margin-bottom: 10px;">
+                            <div class="form-group">
+                                <label>Baseline Age</label>
+                                <div class="form-input-container">
+                                    <i class="fa-regular fa-calendar form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent;" id="baseAge">--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Assigned Gender</label>
+                                <div class="form-input-container">
+                                    <i class="fa-solid fa-venus-mars form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent;" id="baseGender">--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Fasting Glucose baseline</label>
+                                <div class="form-input-container">
+                                    <i class="fa-solid fa-vial form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent;" id="baseGlucose">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Baseline Height</label>
+                                <div class="form-input-container">
+                                    <i class="fa-solid fa-ruler-vertical form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent;" id="baseHeight">--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Baseline Weight</label>
+                                <div class="form-input-container">
+                                    <i class="fa-solid fa-weight-scale form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent;" id="baseWeight">--</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Composite BMI status</label>
+                                <div class="form-input-container">
+                                    <i class="fa-solid fa-circle-info form-input-icon"></i>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.01); border-color: transparent; font-weight: 600;" id="baseBmi">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Right Side: Account Actions and settings -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Account Settings Options -->
+                    <div class="glass-card accent-hover">
+                        <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-sliders" style="color: var(--color-accent);"></i> Command Panel</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div>
+                                <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Trigger Security Reset</label>
+                                <button class="btn-outline" style="width: 100%; font-size: 0.85rem;" id="btnResetPassword"><i class="fa-solid fa-key"></i> Reset Password</button>
+                            </div>
+                            
+                            <div style="border-top: 1px solid var(--border-card); padding-top: 15px;" id="clinicalLogsResetContainer">
+                                <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 8px;">Clinical Audit Log Reset</label>
+                                <button class="btn-outline" style="width: 100%; font-size: 0.85rem; border-color: rgba(239, 68, 68, 0.4); color: var(--color-danger); background: rgba(239, 68, 68, 0.02);" id="btnClearLogs"><i class="fa-regular fa-trash-can"></i> Clear Clinical Logs</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database Information Card -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-circle-info" style="color: var(--color-primary);"></i> System Standards</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.825rem; line-height: 1.6; margin-bottom: 12px;">This platform uses HIPAA-compliant database structures on Google Firebase Cloud Platforms.</p>
+                        <p style="color: var(--text-secondary); font-size: 0.825rem; line-height: 1.6;">Client sessions are checked using stateful, encrypted Web Sockets under 256-bit encryption pipelines.</p>
+                    </div>
+                    
+                </div>
+
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Diagnostics Report | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
+                <span>WellnessInsight</span>
+            </a>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="assessment.html" class="nav-item"><i class="fa-solid fa-stethoscope"></i> Health Wizard</a>
+                <a href="analytics.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Risk Analytics</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-user-doctor"></i> User Profile</a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile-badge">
+                    <div class="user-avatar" id="sidebarAvatar">--</div>
+                    <div class="user-info">
+                        <span class="user-name" id="sidebarName">Retrieving Profile...</span>
+                        <span class="user-role">Patient Member</span>
+                    </div>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn" style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper Panel -->
+        <main class="main-wrapper">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1>Diagnostic Report</h1>
+                    <p id="reportSub">Calculated by WellnessInsight AI Clinical Model</p>
+                </div>
+                <div class="header-actions">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider">
+                            <span class="slider-icons">
+                                <i class="fa-solid fa-moon"></i>
+                                <i class="fa-solid fa-sun"></i>
+                            </span>
+                        </span>
+                    </label>
+                    <button class="btn-primary" id="btnPrintReport"><i class="fa-solid fa-print"></i> Print PDF Report</button>
+                </div>
+            </header>
+
+            <!-- Results Structure -->
+            <section style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 30px; margin-bottom: 40px;" id="resultsLayout">
+                
+                <!-- Left Side: Health Gauge Dial & Severity Banner -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Health score semi-circle gauge -->
+                    <div class="glass-card primary-hover" style="text-align: center; padding: 40px 20px;">
+                        <h3 style="margin-bottom: 25px;">Overall Health Index</h3>
+                        
+                        <div class="gauge-outer">
+                            <div class="gauge-body"></div>
+                            <div class="gauge-fill" id="resultsGaugeFill"></div>
+                            <div class="gauge-cover">
+                                <span class="gauge-value" id="resultsHealthScore">--</span>
+                                <span class="gauge-label">Score</span>
+                            </div>
+                        </div>
+                        
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 20px; line-height: 1.5;">Index calculates composite wellness metrics weighted against clinical biomarker thresholds.</p>
+                    </div>
+
+                    <!-- Color coded Severity status banner -->
+                    <div class="glass-card" id="resultsSeverityBanner" style="padding: 25px; text-align: center; border-radius: var(--radius-md);">
+                        <h4 style="font-size: 1.1rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px;" id="resultsRiskLevelLabel">Evaluating Risk...</h4>
+                        <p style="font-size: 0.85rem;" id="resultsRiskLevelDesc">Correlating vital inputs with disease thresholds...</p>
+                    </div>
+                    
+                </div>
+
+                <!-- Right Side: AI Diagnostic Insights & Individual Risks -->
+                <div class="glass-card primary-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <span class="section-tag" style="margin-bottom: 8px;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Assessment Analysis</span>
+                        <h2 style="font-size: 1.8rem; margin-bottom: 12px;" id="resultsDiseaseName">No Assessment Scan Found</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.925rem; line-height: 1.6; margin-bottom: 25px;" id="resultsInsights">We were unable to locate your latest clinical assessment scan file. Please navigate to the Health Wizard to generate a prediction report.</p>
+                        
+                        <div style="border-top: 1px solid var(--border-card); padding-top: 25px;">
+                            <h4 style="font-size: 0.95rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-primary);">Individual Disease Risk Metrics:</h4>
+                            
+                            <!-- Individual progress bars -->
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; font-weight: 500; color: var(--text-secondary);">
+                                        <span>Cardiovascular (Heart) Risk</span>
+                                        <span id="riskHeartVal">--</span>
+                                    </div>
+                                    <div style="height: 6px; border-radius: 3px; background: var(--border-card); overflow: hidden;">
+                                        <div style="height: 100%; width: 0%; background: var(--color-primary); transition: width 1.2s ease-out;" id="riskHeartBar"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; font-weight: 500; color: var(--text-secondary);">
+                                        <span>Type 2 Diabetes Risk</span>
+                                        <span id="riskDiabetesVal">--</span>
+                                    </div>
+                                    <div style="height: 6px; border-radius: 3px; background: var(--border-card); overflow: hidden;">
+                                        <div style="height: 100%; width: 0%; background: var(--color-accent); transition: width 1.2s ease-out;" id="riskDiabetesBar"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; font-weight: 500; color: var(--text-secondary);">
+                                        <span>Stroke Risk Index</span>
+                                        <span id="riskStrokeVal">--</span>
+                                    </div>
+                                    <div style="height: 6px; border-radius: 3px; background: var(--border-card); overflow: hidden;">
+                                        <div style="height: 100%; width: 0%; background: var(--color-danger); transition: width 1.2s ease-out;" id="riskStrokeBar"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; font-weight: 500; color: var(--text-secondary);">
+                                        <span>Essential Hypertension Risk</span>
+                                        <span id="riskHypertensionVal">--</span>
+                                    </div>
+                                    <div style="height: 6px; border-radius: 3px; background: var(--border-card); overflow: hidden;">
+                                        <div style="height: 100%; width: 0%; background: var(--color-secondary); transition: width 1.2s ease-out;" id="riskHypertensionBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border-card); padding-top: 20px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);" id="resultsMetaFooter">
+                        <span>Prediction Confidence: <strong id="resultsConfidence">--</strong></span>
+                        <span>Clinical Status: Checked</span>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Bottom Section: Recommended Medical Action Plans -->
+            <section class="glass-card primary-hover" style="margin-bottom: 40px;" id="actionChecklistSection">
+                <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-clipboard-list" style="color: var(--color-primary);"></i> Clinician-Recommended Action Plans</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px;">
+                    
+                    <!-- Dietary Actions -->
+                    <div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--color-primary);"><i class="fa-solid fa-plate-wheat"></i> Nutritional Adjustments</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;" id="dietList">
+                            <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                                <i class="fa-regular fa-square-check" style="color: var(--color-primary); margin-top: 3px;"></i>
+                                <span>Evaluating dietary adjustments...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Physical Actions -->
+                    <div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--color-secondary);"><i class="fa-solid fa-person-running"></i> Physical Vitals</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;" id="exerciseList">
+                            <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                                <i class="fa-regular fa-square-check" style="color: var(--color-secondary); margin-top: 3px;"></i>
+                                <span>Evaluating physical vitals...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Medical Actions -->
+                    <div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--color-accent);"><i class="fa-solid fa-user-doctor"></i> Outpatient Consultation</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;" id="clinicalList">
+                            <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-secondary);">
+                                <i class="fa-regular fa-square-check" style="color: var(--color-accent); margin-top: 3px;"></i>
+                                <span>Evaluating outpatient consultation...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/results.js"></script>
+</body>
+</html>

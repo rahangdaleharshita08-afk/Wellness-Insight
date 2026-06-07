@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <!-- Localization Module -->
+    <script type="module" src="js/lang/i18n.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-3"></div>
+    </div>
+
+    <!-- Auth Page Wrapper -->
+    <div class="auth-page-container" style="padding: 40px 20px;">
+        
+        <!-- Language Selector -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: flex-end; width: 100%; max-width: 550px; margin-left: auto; margin-right: auto;">
+            <div class="lang-switcher-container">
+                <i class="fa-solid fa-globe lang-icon"></i>
+                <select class="lang-select" aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="glass-card auth-card accent-hover" style="max-width: 550px;">
+            
+            <div class="auth-header">
+                <a href="index.html" class="sidebar-logo" style="justify-content: center; margin-bottom: 20px;">
+                    <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary); font-size: 2.2rem;"></i>
+                    <span data-i18n="logo_title">WellnessInsight</span>
+                </a>
+                <h2 data-i18n="signup_title">Start Your Journey</h2>
+                <p data-i18n="signup_desc">Register a clinical account to begin AI risk monitoring</p>
+            </div>
+
+            <!-- Role Selector Toggles -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" id="tabPatient" data-i18n="tab_patient_signup"><i class="fa-solid fa-user"></i> Patient SignUp</button>
+                <button type="button" class="auth-tab" id="tabDoctor" data-i18n="tab_doctor_signup"><i class="fa-solid fa-user-doctor"></i> Doctor SignUp</button>
+            </div>
+            
+            <form id="signupForm">
+                
+                <!-- Role tracker input -->
+                <input type="hidden" id="accountRole" value="patient">
+
+                <!-- 1. Shared / Common Fields -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name" data-i18n="full_name">Full Name</label>
+                        <div class="form-input-container">
+                            <i class="fa-regular fa-user form-input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                class="form-input" 
+                                placeholder="John Doe" 
+                                data-i18n-placeholder="fullname_placeholder"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" data-i18n="phone_number">Phone Number</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-phone form-input-icon"></i>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                class="form-input" 
+                                placeholder="123-456-7890" 
+                                data-i18n-placeholder="phone_placeholder"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="email" data-i18n="email_address">Email Address</label>
+                        <div class="form-input-container">
+                            <i class="fa-regular fa-envelope form-input-icon"></i>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                class="form-input" 
+                                placeholder="john@example.com" 
+                                data-i18n-placeholder="email_placeholder"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" data-i18n="password">Password</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-lock form-input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="form-input" 
+                                placeholder="••••••••" 
+                                data-i18n-placeholder="password_placeholder"
+                                required
+                            >
+                            <i class="fa-regular fa-eye password-toggle-btn" id="passwordToggle"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Patient Specific Fieldsets -->
+                <div class="patient-fields" id="patientFields">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="age" data-i18n="age_years">Age (Years)</label>
+                            <div class="form-input-container">
+                                <i class="fa-regular fa-calendar form-input-icon"></i>
+                                <input 
+                                    type="number" 
+                                    id="age" 
+                                    class="form-input" 
+                                    placeholder="35" 
+                                    data-i18n-placeholder="age_placeholder"
+                                    min="1" 
+                                    max="120"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender" data-i18n="assigned_gender">Assigned Gender</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-venus-mars form-input-icon"></i>
+                                <select id="gender" class="form-input" required>
+                                    <option value="" disabled selected data-i18n="select_gender">Select Gender</option>
+                                    <option value="Male" data-i18n="gender_male">Male</option>
+                                    <option value="Female" data-i18n="gender_female">Female</option>
+                                    <option value="Other" data-i18n="gender_other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bloodGroup" data-i18n="blood_group">Blood Group</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-droplet form-input-icon" style="color: var(--color-danger);"></i>
+                            <select id="bloodGroup" class="form-input" required>
+                                <option value="" disabled selected data-i18n="select_blood_group">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" data-i18n="residential_address">Residential Address</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-map-location-dot form-input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="address" 
+                                class="form-input" 
+                                placeholder="123 Health Ave, Clinical City" 
+                                data-i18n-placeholder="address_placeholder"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Doctor Specific Fieldsets (Hidden by default) -->
+                <div class="doctor-fields" id="doctorFields" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="specialization" data-i18n="medical_specialization">Medical Specialization</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-user-doctor form-input-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="specialization" 
+                                    class="form-input" 
+                                    placeholder="e.g. Cardiologist"
+                                    data-i18n-placeholder="spec_placeholder"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience" data-i18n="experience_years">Experience (Years)</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-hourglass-half form-input-icon"></i>
+                                <input 
+                                    type="number" 
+                                    id="experience" 
+                                    class="form-input" 
+                                    placeholder="e.g. 12" 
+                                    data-i18n-placeholder="exp_placeholder"
+                                    min="0" 
+                                    max="60"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clinicName" data-i18n="hospital_clinic_name">Hospital / Clinic Name</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-hospital form-input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="clinicName" 
+                                class="form-input" 
+                                placeholder="Metropolitan General Hospital"
+                                data-i18n-placeholder="clinic_placeholder"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="licenseNumber" data-i18n="medical_license_number">Medical License Number</label>
+                        <div class="form-input-container">
+                            <i class="fa-solid fa-id-card form-input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="licenseNumber" 
+                                class="form-input" 
+                                placeholder="LIC-9938472-USA"
+                                data-i18n-placeholder="license_placeholder"
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-secondary" style="width: 100%; padding: 14px; margin-top: 15px;" data-i18n="create_account">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+                
+            </form>
+            
+            <div class="auth-footer-links">
+                <span data-i18n="already_registered">Already registered?</span> <a href="login.html" data-i18n="sign_in_instead">Sign In Instead</a>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/signup.js"></script>
+
+    <!-- UI State Helper Script (Theme & Tab Switches) -->
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Password visibility toggle logic
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('passwordToggle');
+
+        toggleIcon.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+
+        // Tab Switching State Machine
+        const tabPatient = document.getElementById('tabPatient');
+        const tabDoctor = document.getElementById('tabDoctor');
+        
+        const patientFields = document.getElementById('patientFields');
+        const doctorFields = document.getElementById('doctorFields');
+        const roleInput = document.getElementById('accountRole');
+
+        // Demographics Inputs (Patient)
+        const ageIn = document.getElementById('age');
+        const genderSel = document.getElementById('gender');
+        const bgSel = document.getElementById('bloodGroup');
+        const addressIn = document.getElementById('address');
+
+        // Clinical Credentials Inputs (Doctor)
+        const specIn = document.getElementById('specialization');
+        const expIn = document.getElementById('experience');
+        const clinicIn = document.getElementById('clinicName');
+        const licIn = document.getElementById('licenseNumber');
+
+        tabPatient.addEventListener('click', () => {
+            tabPatient.classList.add('active');
+            tabDoctor.classList.remove('active');
+            
+            patientFields.style.display = 'block';
+            doctorFields.style.display = 'none';
+            roleInput.value = 'patient';
+
+            // Swap required checks
+            ageIn.required = true;
+            genderSel.required = true;
+            bgSel.required = true;
+            addressIn.required = true;
+
+            specIn.required = false;
+            expIn.required = false;
+            clinicIn.required = false;
+            licIn.required = false;
+        });
+
+        tabDoctor.addEventListener('click', () => {
+            tabDoctor.classList.add('active');
+            tabPatient.classList.remove('active');
+            
+            doctorFields.style.display = 'block';
+            patientFields.style.display = 'none';
+            roleInput.value = 'doctor';
+
+            // Swap required checks
+            specIn.required = true;
+            expIn.required = true;
+            clinicIn.required = true;
+            licIn.required = true;
+
+            ageIn.required = false;
+            genderSel.required = false;
+            bgSel.required = false;
+            addressIn.required = false;
+        });
+    </script>
+</body>
+</html>

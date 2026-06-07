@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Dashboard | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <!-- Inline styles to style custom SVG progress rings -->
+    <style>
+        .score-circle-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+        }
+        
+        .score-circle-svg {
+            transform: rotate(-90deg);
+        }
+        
+        .circle-bg {
+            fill: none;
+            stroke: var(--border-card);
+            stroke-width: 10;
+        }
+        
+        .circle-progress {
+            fill: none;
+            stroke: var(--color-primary);
+            stroke-dasharray: 377; /* 2 * PI * r (r=60) */
+            stroke-dashoffset: 377;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+        
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .score-num {
+            font-size: 2.25rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            line-height: 1;
+        }
+        
+        .score-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+    </style>
+    <!-- Localization Module -->
+    <script type="module" src="js/lang/i18n.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+        <div class="glow-circle glow-circle-3"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
+                <span data-i18n="logo_title">WellnessInsight</span>
+            </a>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active" data-i18n="sidebar_dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="assessment.html" class="nav-item" data-i18n="sidebar_wizard"><i class="fa-solid fa-stethoscope"></i> Health Wizard</a>
+                <a href="analytics.html" class="nav-item" data-i18n="sidebar_analytics"><i class="fa-solid fa-chart-line"></i> Risk Analytics</a>
+                <a href="#patientAppointmentsSection" class="nav-item" data-i18n="sidebar_appointment"><i class="fa-regular fa-calendar-check"></i> Book Appointment</a>
+                <a href="profile.html" class="nav-item" data-i18n="sidebar_profile"><i class="fa-solid fa-user-doctor"></i> User Profile</a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="profile.html" class="user-profile-badge">
+                    <div class="user-avatar" id="sidebarAvatar">--</div>
+                    <div class="user-info">
+                        <span class="user-name" id="sidebarName">Retrieving Profile...</span>
+                        <span class="user-role" data-i18n="sidebar_role_patient">Patient Member</span>
+                    </div>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn" style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);" data-i18n="sign_out"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper Panel -->
+        <main class="main-wrapper">
+            
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="welcomeUserGreeting" data-i18n="welcome_back_greeting">Welcome Back</h1>
+                    <p id="lastAssessmentSubtitle" data-i18n="loading_profile_data">Loading profile and prediction records...</p>
+                </div>
+                <div class="header-actions">
+                    <!-- SOS Emergency Button -->
+                    <button id="btnTriggerSOS" style="background: linear-gradient(135deg, var(--color-danger), #b91c1c); color: white; border: none; font-size: 0.85rem; font-weight: 700; padding: 8px 16px; border-radius: var(--radius-md); cursor: pointer; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); display: flex; align-items: center; gap: 6px; outline: none; transition: var(--transition-smooth); margin-right: 10px;" data-i18n="sos">
+                        <i class="fa-solid fa-triangle-exclamation fa-beat"></i> SOS
+                    </button>
+
+                    <!-- Notification Bell Dropdown -->
+                    <div class="notification-bell-container" style="position: relative; margin-right: 15px;">
+                        <button id="notificationBellBtn" style="background: transparent; border: none; font-size: 1.3rem; color: var(--text-secondary); cursor: pointer; position: relative; padding: 5px; outline: none; transition: var(--transition-smooth);">
+                            <i class="fa-regular fa-bell"></i>
+                            <span id="notificationBadge" style="display: none; position: absolute; top: 0; right: 0; background: var(--color-danger); color: white; border-radius: 50%; font-size: 0.65rem; font-weight: 700; width: 16px; height: 16px; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);">0</span>
+                        </button>
+                        <div id="notificationDropdown" style="display: none; position: absolute; top: 40px; right: 0; width: 320px; background: var(--bg-card); backdrop-filter: var(--glass-blur) var(--glass-saturate); border: 1px solid var(--border-card); border-radius: var(--radius-md); box-shadow: var(--shadow-premium); padding: 15px; z-index: 1000; max-height: 400px; overflow-y: auto;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <span data-i18n="notifications">Notifications</span>
+                                <button id="btnMarkNotificationsRead" style="background: transparent; border: none; font-size: 0.75rem; color: var(--color-primary); cursor: pointer; font-weight: 600;" data-i18n="clear_all">Clear All</button>
+                            </h4>
+                            <div id="notificationsList" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 20px 0;" data-i18n="no_new_alerts">No new alerts</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selector Dropdown -->
+                    <div class="lang-switcher-container" style="margin-right: 15px;">
+                        <i class="fa-solid fa-globe lang-icon"></i>
+                        <select class="lang-select" aria-label="Select Language">
+                            <option value="en">English</option>
+                            <option value="hi">हिन्दी</option>
+                            <option value="mr">मराठी</option>
+                        </select>
+                    </div>
+
+                    <label class="theme-switch" aria-label="Toggle Theme">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider">
+                            <span class="slider-icons">
+                                <i class="fa-solid fa-moon"></i>
+                                <i class="fa-solid fa-sun"></i>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+            </header>
+
+            <!-- Metrics Cards Grid -->
+            <section class="dashboard-grid">
+                
+                <!-- Health Score Card -->
+                <div class="glass-card metric-card primary-hover">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="health_index_score">Health Index Score</span>
+                        <span class="badge-risk low" id="dashboardHealthStatus" style="display: none;">Low Risk</span>
+                    </div>
+                    <div class="metric-body" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <div class="score-circle-container">
+                            <svg class="score-circle-svg" width="140" height="140">
+                                <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
+                                <circle class="circle-progress" id="healthCircleProgress" cx="70" cy="70" r="60"></circle>
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-num" id="healthScoreDisplay">--</span>
+                                <span class="score-label" data-i18n="index">Index</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Clinical Concern Card -->
+                <div class="glass-card metric-card accent-hover">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="primary_clinical_concern">Primary Clinical Concern</span>
+                        <div class="metric-icon-box" style="background: linear-gradient(135deg, var(--color-accent), var(--color-primary));">
+                            <i class="fa-solid fa-shield-virus"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <h2 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 5px;" id="dashboardConcernLabel" data-i18n="no_scan_run">No Scan Run</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4;" id="dashboardInsightsText" data-i18n="run_first_scan_desc">Run your first diagnostic health wizard assessment scan to initialize dynamic risk monitoring indicators.</p>
+                    </div>
+                    <div class="metric-desc" style="border-top: 1px solid var(--border-card); padding-top: 12px; margin-top: 15px;" id="riskFooterText" data-i18n="not_evaluated">
+                        <i class="fa-regular fa-clock"></i> Not Evaluated
+                    </div>
+                </div>
+
+                <!-- Three Vitals Cards -->
+                <div class="glass-card metric-card primary-hover" id="bmiCard">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="bmi_title">Body Mass Index (BMI)</span>
+                        <div class="metric-icon-box" style="background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));">
+                            <i class="fa-solid fa-weight-scale"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="dashboardBmiDisplay">--</span>
+                        <span id="dashboardBmiBadge" class="metric-badge" style="display: none; vertical-align: middle; margin-left: 8px;">--</span>
+                        <p class="metric-desc" id="bmiDesc" data-i18n="bmi_desc">Weight to height clinical ratio</p>
+                    </div>
+                </div>
+
+                <div class="glass-card metric-card primary-hover" id="bpCard">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="bp_title">Blood Pressure</span>
+                        <div class="metric-icon-box" style="background: linear-gradient(135deg, var(--color-secondary), var(--color-success));">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="dashboardBpDisplay">--</span>
+                        <span id="dashboardBpBadge" class="metric-badge" style="display: none; vertical-align: middle; margin-left: 8px;">--</span>
+                        <p class="metric-desc" id="bpDesc" data-i18n="bp_desc">Systolic / Diastolic arterial pressure</p>
+                    </div>
+                </div>
+
+                <div class="glass-card metric-card primary-hover" id="sugarCard">
+                    <div class="metric-header">
+                        <span class="metric-title" data-i18n="sugar_title">Fasting Blood Sugar</span>
+                        <div class="metric-icon-box" style="background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));">
+                            <i class="fa-solid fa-vial"></i>
+                        </div>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-value" id="dashboardGlucoseDisplay">--</span>
+                        <span id="dashboardGlucoseBadge" class="metric-badge" style="display: none; vertical-align: middle; margin-left: 8px;">--</span>
+                        <p class="metric-desc" id="glucoseDesc" data-i18n="sugar_desc">Fasting glucose concentration</p>
+                    </div>
+                </div>
+                
+            </section>
+
+            <!-- Dashboard Split Layout -->
+            <section class="content-grid-two-cols">
+                
+                <!-- Recent Assessment History, Reports, and Timeline Tabs -->
+                <div class="glass-card primary-hover" style="min-height: 500px;">
+                    <!-- Tab buttons -->
+                    <div class="auth-tabs" style="margin-bottom: 25px; background: rgba(255,255,255,0.02); border-radius: var(--radius-md); padding: 4px; border: 1px solid var(--border-card); display: flex;">
+                        <button type="button" class="auth-tab active" id="tabScans" style="padding: 10px; font-size: 0.85rem; flex: 1;" data-i18n="tab_scan_history"><i class="fa-solid fa-stethoscope"></i> Scan History</button>
+                        <button type="button" class="auth-tab" id="tabReports" style="padding: 10px; font-size: 0.85rem; flex: 1;"><i class="fa-solid fa-file-medical"></i> <span data-i18n="tab_doctor_reports">Doctor Reports</span> (<span id="reportsCount">0</span>)</button>
+                        <button type="button" class="auth-tab" id="tabTimeline" style="padding: 10px; font-size: 0.85rem; flex: 1;" data-i18n="tab_timeline"><i class="fa-solid fa-clock-rotate-left"></i> Timeline</button>
+                    </div>
+
+                    <!-- Panel 1: Assessment History Scans -->
+                    <div class="wizard-panel active" id="panelScans">
+                        <div class="scans-table-container">
+                            <table class="scans-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="assessment_date">Assessment Date</th>
+                                        <th data-i18n="health_score">Health Score</th>
+                                        <th data-i18n="primary_risk">Primary Risk</th>
+                                        <th data-i18n="risk_classification">Risk Classification</th>
+                                        <th data-i18n="action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="predictionsHistoryTable">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;" data-i18n="loading_historical_data">
+                                            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px; display: block;"></i> Loading historical clinical data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Panel 2: Clinical Reports & Prescriptions -->
+                    <div class="wizard-panel" id="panelReports">
+                        <div id="patientReportsList" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 40px 0;" data-i18n="no_reports_catalog">
+                                <i class="fa-solid fa-prescription" style="font-size: 2rem; margin-bottom: 10px; display: block; color: var(--text-muted);"></i>
+                                No published specialist reports on catalog.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel 3: Health Timeline History -->
+                    <div class="wizard-panel" id="panelTimeline">
+                        <div id="patientTimelineContainer" style="position: relative; padding: 10px 0 10px 25px; display: flex; flex-direction: column; gap: 25px; max-height: 420px; overflow-y: auto;">
+                            <!-- Dynamic Timeline Line -->
+                            <div style="position: absolute; top: 0; bottom: 0; left: 7px; width: 2px; background: var(--border-card);"></div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 40px 0;" data-i18n="no_timeline_events">
+                                No clinical events logged yet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Quick Panel (Actions & Personalized checklist) -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    
+                    <!-- Clinician Care Notes Card -->
+                    <div class="glass-card accent-hover" id="clinicalNotesCard" style="display: none; border-color: rgba(139, 92, 246, 0.35);">
+                        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;" data-i18n="doctor_care_notes"><i class="fa-solid fa-user-doctor" style="color: var(--color-accent);"></i> Doctor's Care Notes</h3>
+                        <div style="background: rgba(139, 92, 246, 0.05); border-left: 4px solid var(--color-accent); padding: 15px; border-radius: var(--radius-sm);">
+                            <p style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; font-style: italic;" id="clinicalNotesText" data-i18n="retrieving_care_notes">Retrieving doctor care notes...</p>
+                            <div style="margin-top: 10px; text-align: right; font-size: 0.725rem; color: var(--text-muted);" id="clinicalNotesDate">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Health Reminders & Habits Checklist -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;" data-i18n="daily_vitals_habits"><i class="fa-solid fa-circle-check" style="color: var(--color-secondary);"></i> Daily Vitals & Habits</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.85rem;">
+                            <!-- Meds Checkbox -->
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" id="chkMedsReminder" style="width: 16px; height: 16px; cursor: pointer;">
+                                <span data-i18n="medicine_intake">Medicine Intake (Take daily doses)</span>
+                            </label>
+                            
+                            <!-- Water Counter -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+                                <span style="display: flex; align-items: center; gap: 8px;" data-i18n="hydration_tracker"><i class="fa-solid fa-glass-water" style="color: var(--color-primary);"></i> Hydration Tracker</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button type="button" id="btnDecWater" style="background: transparent; border: 1px solid var(--border-card); color: var(--text-primary); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; outline: none;">-</button>
+                                    <strong id="waterGlassesCount" style="font-size: 1rem; color: var(--color-primary);">0</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">/8 gl</span>
+                                    <button type="button" id="btnIncWater" style="background: transparent; border: 1px solid var(--border-card); color: var(--text-primary); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; outline: none;">+</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Cardio exercise -->
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" id="chkExerciseReminder" style="width: 16px; height: 16px; cursor: pointer;">
+                                <span data-i18n="cardio_training">Cardio Training (30 mins walk/run)</span>
+                            </label>
+                            
+                            <!-- Checkup -->
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" id="chkCheckupReminder" style="width: 16px; height: 16px; cursor: pointer;">
+                                <span data-i18n="daily_checkup">Daily Checkup (Vitals log completed)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="glass-card accent-hover">
+                        <h3 style="margin-bottom: 20px;" data-i18n="quick_commands"><i class="fa-solid fa-circle-nodes" style="color: var(--color-accent);"></i> Quick Commands</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <a href="assessment.html" class="btn-primary" style="width: 100%;" data-i18n="run_diagnostic_scan"><i class="fa-solid fa-stethoscope"></i> Run Diagnostic Scan</a>
+                            <a href="#patientAppointmentsSection" class="btn-secondary" style="width: 100%;" data-i18n="schedule_consultation"><i class="fa-regular fa-calendar-plus"></i> Schedule Consultation</a>
+                            <a href="analytics.html" class="btn-outline" style="width: 100%; border-color: var(--border-card); color: var(--text-primary);" data-i18n="view_health_trends"><i class="fa-solid fa-chart-line"></i> View Health Trends</a>
+                            <a href="profile.html" class="btn-outline" style="width: 100%;" data-i18n="manage_profile"><i class="fa-solid fa-user-gear"></i> Manage Profile</a>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Personalized AI Advisory Card -->
+                    <div class="glass-card primary-hover">
+                        <h3 style="margin-bottom: 15px;" data-i18n="ai_health_advice"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--color-primary);"></i> AI Health Advice</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 20px;" id="advisoryIntro" data-i18n="actions_calculated_indicators">Actions calculated based on your biometric profile indicators:</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;" id="dashboardRecommendationsList">
+                            <div style="display: flex; align-items: flex-start; gap: 12px; font-size: 0.85rem; color: var(--text-secondary);">
+                                <i class="fa-regular fa-circle-question" style="color: var(--text-muted); margin-top: 3px;"></i>
+                                <span data-i18n="complete_scan_load_actions">Complete a health wizard assessment scan to load clinically tailored medical actions.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Booking & Appointments Grid -->
+            <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 40px;" id="patientAppointmentsSection">
+                
+                <!-- Book Appointment Card -->
+                <div class="glass-card primary-hover">
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" data-i18n="book_consultation"><i class="fa-regular fa-calendar-plus" style="color: var(--color-primary); font-size: 1.25rem;"></i> Book Consultation</h3>
+                    
+                    <form id="bookAppointmentForm">
+                        <div class="form-group">
+                            <label for="doctorSelect" data-i18n="select_clinical_specialist">Select Clinical Specialist</label>
+                            <div class="form-input-container">
+                                <i class="fa-solid fa-user-doctor form-input-icon"></i>
+                                <select id="doctorSelect" class="form-input" required>
+                                    <option value="" disabled selected data-i18n="loading_practitioners">Loading practitioners...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appointmentDate" data-i18n="appointment_date_time">Appointment Date & Time</label>
+                            <div class="form-input-container">
+                                <i class="fa-regular fa-clock form-input-icon"></i>
+                                <input type="datetime-local" id="appointmentDate" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;" id="btnBookAppointment" data-i18n="request_appointment">
+                            <i class="fa-regular fa-calendar-check"></i> Request Appointment
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Your Scheduled Appointments Card -->
+                <div class="glass-card primary-hover">
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" data-i18n="active_appointments"><i class="fa-regular fa-calendar-days" style="color: var(--color-secondary); font-size: 1.25rem;"></i> Active Appointments</h3>
+                    
+                    <div class="scans-table-container" style="max-height: 250px; overflow-y: auto;">
+                        <table class="scans-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="specialist">Specialist</th>
+                                    <th data-i18n="date_time">Date & Time</th>
+                                    <th data-i18n="status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientAppointmentsHistoryTable">
+                                <tr>
+                                    <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 30px 0;" data-i18n="no_appointments_requested">
+                                        No appointments requested yet.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Frosted Emergency SOS Modal -->
+    <div class="doctor-modal-overlay" id="sosModal" style="display: none; justify-content: center; align-items: center; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);">
+        <div class="doctor-modal-card" style="max-width: 500px; width: 90%; border-color: var(--color-danger); box-shadow: 0 10px 45px rgba(239, 68, 68, 0.25);">
+            <div class="doctor-modal-header" style="border-bottom: 1px solid rgba(239, 68, 68, 0.25); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-truck-medical" style="color: var(--color-danger); font-size: 1.5rem;"></i>
+                    <div>
+                        <h3 style="font-size: 1.3rem; color: var(--color-danger); margin-bottom: 0;" data-i18n="emergency_health_card">Emergency Health Card</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 2px; margin-bottom: 0;" data-i18n="one_click_sos_panel">One-Click Medical SOS Panel</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" id="btnExitSosModal" style="background: transparent; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="doctor-modal-body" style="padding: 20px 0;">
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Medical Metrics -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); padding: 15px; border-radius: var(--radius-md);">
+                        <div><strong style="color: var(--text-secondary); font-size: 0.8rem; display: block;" data-i18n="blood_group">Blood Group</strong><span id="sosBloodGroup" style="font-size: 1.25rem; font-weight: 700; color: var(--color-danger);">--</span></div>
+                        <div><strong style="color: var(--text-secondary); font-size: 0.8rem; display: block;" data-i18n="patient_age">Patient Age</strong><span id="sosAge" style="font-size: 1.25rem; font-weight: 700;">--</span></div>
+                        <div style="grid-column: span 2; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 5px;">
+                            <strong style="color: var(--text-secondary); font-size: 0.8rem; display: block; margin-bottom: 4px;" data-i18n="known_conditions">Known Medical Conditions</strong>
+                            <p id="sosMedicalHistory" style="font-size: 0.85rem; color: var(--text-primary); font-style: italic; margin-bottom: 0;" data-i18n="no_conditions_catalog">No medical conditions on catalog.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Emergency Contacts -->
+                    <div class="glass-card" style="padding: 15px; background: rgba(255,255,255,0.01);">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 10px; color: var(--color-primary);" data-i18n="primary_emergency_contact"><i class="fa-solid fa-phone"></i> Primary Emergency Contact</h4>
+                        <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
+                            <div><strong style="color: var(--text-secondary);" data-i18n="full_name">Full Name:</strong> <span id="sosContactName" style="font-weight: 600;">--</span></div>
+                            <div><strong style="color: var(--text-secondary);" data-i18n="relationship">Relationship:</strong> <span id="sosContactRelation">--</span></div>
+                            <div style="margin-top: 10px;">
+                                <a id="sosContactPhoneBtn" href="tel:" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem; width: 100%; border-radius: var(--radius-sm);" data-i18n="call_emergency_contact"><i class="fa-solid fa-phone-flip"></i> Call Emergency Contact</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="doctor-modal-footer" style="border-top: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 10px; padding-top: 15px;">
+                <button id="btnBroadcastSOS" class="btn-primary" style="background: linear-gradient(135deg, var(--color-danger), #dc2626); width: 100%; padding: 12px;" data-i18n="broadcast_sos_specialist"><i class="fa-solid fa-satellite-dish fa-pulse"></i> Broadcast SOS to Booking Specialist</button>
+                <div style="text-align: center; font-size: 0.7rem; color: var(--text-muted);" data-i18n="sos_disclaimer">
+                    Disclaimer: SOS broadcast dispatches emergency vital notifications to your practitioner's directory.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+    <!-- AI Chatbot Integration -->
+    <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

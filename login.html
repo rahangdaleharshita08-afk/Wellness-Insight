@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | WellnessInsight</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <!-- Localization Module -->
+    <script type="module" src="js/lang/i18n.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+    </div>
+
+    <!-- Auth Page Wrapper -->
+    <div class="auth-page-container">
+        
+        <!-- Language Selector -->
+        <div style="margin-bottom: 20px; display: flex; justify-content: flex-end; width: 100%; max-width: 450px;">
+            <div class="lang-switcher-container">
+                <i class="fa-solid fa-globe lang-icon"></i>
+                <select class="lang-select" aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="glass-card auth-card primary-hover">
+            
+            <div class="auth-header">
+                <a href="index.html" class="sidebar-logo" style="justify-content: center; margin-bottom: 20px;">
+                    <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary); font-size: 2.2rem;"></i>
+                    <span data-i18n="logo_title">WellnessInsight</span>
+                </a>
+                <h2 data-i18n="login_title">Welcome Back</h2>
+                <p data-i18n="login_desc">Sign in to view your diagnostic scores and history</p>
+            </div>
+
+            <!-- Role Selector Toggles -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" id="tabPatient" data-i18n="tab_patient_login"><i class="fa-solid fa-user"></i> Patient Login</button>
+                <button type="button" class="auth-tab" id="tabDoctor" data-i18n="tab_doctor_login"><i class="fa-solid fa-user-doctor"></i> Doctor Login</button>
+            </div>
+            
+            <form id="loginForm">
+                
+                <!-- Role tracker hidden input -->
+                <input type="hidden" id="loginRole" value="patient">
+
+                <div class="form-group">
+                    <label for="loginEmail" data-i18n="email_address">Email Address</label>
+                    <div class="form-input-container">
+                        <i class="fa-regular fa-envelope form-input-icon"></i>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            class="form-input" 
+                            placeholder="name@hospital.com" 
+                            data-i18n-placeholder="email_placeholder"
+                            required
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label for="loginPassword" data-i18n="password">Password</label>
+                        <a href="#" id="forgotPasswordBtn" style="font-size: 0.775rem; color: var(--color-primary); text-decoration: none; font-weight: 500;" data-i18n="forgot_password">Forgot Password?</a>
+                    </div>
+                    <div class="form-input-container">
+                        <i class="fa-solid fa-lock form-input-icon"></i>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            class="form-input" 
+                            placeholder="••••••••" 
+                            data-i18n-placeholder="password_placeholder"
+                            required
+                        >
+                        <i class="fa-regular fa-eye password-toggle-btn" id="passwordToggle"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; margin-top: 10px;" data-i18n="sign_in">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+                </button>
+                
+            </form>
+            
+            <div class="auth-divider" id="googleAuthDivider" data-i18n="or_continue_with">or continue with</div>
+            
+            <button id="googleLogin" class="google-auth-btn" data-i18n="sign_in_with_google">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google Logo">
+                Sign in with Google
+            </button>
+            
+            <div class="auth-footer-links">
+                <span data-i18n="new_to_platform">New to the platform?</span> <a href="signup.html" data-i18n="register_now">Register Now</a>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <!-- Firebase Script Integrations -->
+    <script type="module" src="js/login.js"></script>
+
+    <!-- UI State Helper Script (Theme & Password Toggle & Tab switches) -->
+    <script>
+        // Set background theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Password visibility toggle logic
+        const passwordInput = document.getElementById('loginPassword');
+        const toggleIcon = document.getElementById('passwordToggle');
+
+        toggleIcon.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+
+
+
+        // Tab Switching State Machine
+        const tabPatient = document.getElementById('tabPatient');
+        const tabDoctor = document.getElementById('tabDoctor');
+        const roleInput = document.getElementById('loginRole');
+        const googleLoginBtn = document.getElementById('googleLogin');
+        const googleAuthDivider = document.getElementById('googleAuthDivider');
+
+        tabPatient.addEventListener('click', () => {
+            tabPatient.classList.add('active');
+            tabDoctor.classList.remove('active');
+            roleInput.value = 'patient';
+            
+            // Show Google Sign-in for patients
+            googleLoginBtn.style.display = 'flex';
+            googleAuthDivider.style.display = 'flex';
+        });
+
+        tabDoctor.addEventListener('click', () => {
+            tabDoctor.classList.add('active');
+            tabPatient.classList.remove('active');
+            roleInput.value = 'doctor';
+
+            // Hide Google Sign-in for doctors to ensure credential integrity
+            googleLoginBtn.style.display = 'none';
+            googleAuthDivider.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

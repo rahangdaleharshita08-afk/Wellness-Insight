@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Health & Risk Predictor | AI Healthcare Advisor</title>
+    
+    <!-- Google Fonts & FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="style.css">
+    <!-- Localization Module -->
+    <script type="module" src="js/lang/i18n.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="bg-ambient-glow">
+        <div class="glow-circle glow-circle-1"></div>
+        <div class="glow-circle glow-circle-2"></div>
+        <div class="glow-circle glow-circle-3"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%;">
+        <a href="index.html" class="sidebar-logo" style="margin-bottom: 0;">
+            <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary); font-size: 1.8rem;"></i>
+            <span data-i18n="logo_title">WellnessInsight</span>
+        </a>
+        
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <!-- Language Selector Dropdown -->
+            <div class="lang-switcher-container">
+                <i class="fa-solid fa-globe lang-icon"></i>
+                <select class="lang-select" aria-label="Select Language">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+            
+            <label class="theme-switch" aria-label="Toggle Theme">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider">
+                    <span class="slider-icons">
+                        <i class="fa-solid fa-moon"></i>
+                        <i class="fa-solid fa-sun"></i>
+                    </span>
+                </span>
+            </label>
+            <a href="login.html" class="btn-outline" style="padding: 8px 20px; font-size: 0.9rem;" data-i18n="sign_in">Sign In</a>
+            <a href="signup.html" class="btn-primary" style="padding: 8px 22px; font-size: 0.9rem;" data-i18n="get_started">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="hero-section">
+        <div class="hero-content">
+            <span class="section-tag" data-i18n="hero_tag"><i class="fa-solid fa-wand-magic-sparkles"></i> AI-Powered Diagnostics</span>
+            <h1 data-i18n="hero_title">Predict Health Risks</span> Before They Become </span>Problems</h1>
+            <p data-i18n="hero_desc">Empower your wellness journey using advanced AI risk assessment algorithms. Calculate your metabolic score, analyze cardiovascular trends, and download clinician-friendly diagnostic reports instantly.</p>
+            <div style="display: flex; gap: 15px;">
+                <a href="signup.html" class="btn-primary" data-i18n="start_free_scan"><i class="fa-solid fa-rocket"></i> Start Free Scan</a>
+                <a href="#features" class="btn-outline" data-i18n="how_it_works"><i class="fa-solid fa-circle-play"></i> How it Works</a>
+            </div>
+        </div>
+        
+        <div class="hero-illustration">
+            <div class="hero-svg-card">
+                <!-- Gorgeous Floating Custom Interactive Healthcare SVG -->
+                <svg viewBox="0 0 400 400" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background grids -->
+                    <circle cx="200" cy="200" r="180" fill="none" stroke="var(--border-card)" stroke-width="1" stroke-dasharray="5,5"/>
+                    <circle cx="200" cy="200" r="140" fill="none" stroke="var(--border-card)" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="100" fill="none" stroke="var(--border-card)" stroke-width="2" stroke-dasharray="20,10"/>
+                    
+                    <!-- Center Glowing Heart and pulse -->
+                    <circle cx="200" cy="200" r="45" fill="var(--color-primary-glow)" filter="blur(10px)"/>
+                    <circle cx="200" cy="200" r="35" fill="url(#grad-blue)"/>
+                    <path d="M185 200 h10 l5 -15 l7 25 l5 -18 l5 8 h13" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <!-- DNA Helix Orbiting Icon -->
+                    <g transform="translate(100, 100)">
+                        <circle cx="0" cy="0" r="24" fill="var(--color-accent-glow)"/>
+                        <circle cx="0" cy="0" r="18" fill="var(--bg-secondary)"/>
+                        <path d="M-8 -6 L8 6 M-8 6 L8 -6" stroke="var(--color-accent)" stroke-width="2"/>
+                        <circle cx="-8" cy="-6" r="3" fill="var(--color-accent)"/>
+                        <circle cx="8" cy="6" r="3" fill="var(--color-accent)"/>
+                        <circle cx="-8" cy="6" r="3" fill="var(--color-accent)"/>
+                        <circle cx="8" cy="-6" r="3" fill="var(--color-accent)"/>
+                    </g>
+                    
+                    <!-- Shield Secure Security Icon -->
+                    <g transform="translate(300, 120)">
+                        <circle cx="0" cy="0" r="24" fill="var(--color-secondary-glow)"/>
+                        <circle cx="0" cy="0" r="18" fill="var(--bg-secondary)"/>
+                        <path d="M-6 -6 H6 V0 C6 5 0 9 0 9 C0 9 -6 5 -6 0 Z" fill="none" stroke="var(--color-secondary)" stroke-width="2" stroke-linejoin="round"/>
+                    </g>
+                    
+                    <!-- Brain Signal Icon -->
+                    <g transform="translate(120, 290)">
+                        <circle cx="0" cy="0" r="24" fill="var(--color-primary-glow)"/>
+                        <circle cx="0" cy="0" r="18" fill="var(--bg-secondary)"/>
+                        <path d="M-6 0 C-6 -8 6 -8 6 0 M-3 0 C-3 -4 3 -4 3 0 M0 0 H0" fill="none" stroke="var(--color-primary)" stroke-width="2"/>
+                        <circle cx="0" cy="3" r="1.5" fill="var(--color-primary)"/>
+                    </g>
+                    
+                    <!-- Capsule / Pill Meds Icon -->
+                    <g transform="translate(290, 270)">
+                        <circle cx="0" cy="0" r="24" fill="var(--color-danger-bg)"/>
+                        <circle cx="0" cy="0" r="18" fill="var(--bg-secondary)"/>
+                        <rect x="-4" y="-8" width="8" height="16" rx="4" transform="rotate(45)" fill="none" stroke="var(--color-danger)" stroke-width="2"/>
+                        <line x1="-3" y1="3" x2="3" y2="-3" stroke="var(--color-danger)" stroke-width="2"/>
+                    </g>
+                    
+                    <!-- Connection lines -->
+                    <line x1="200" y1="155" x2="200" y2="100" stroke="var(--border-card)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <line x1="200" y1="245" x2="200" y2="300" stroke="var(--border-card)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <line x1="155" y1="200" x2="100" y2="200" stroke="var(--border-card)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    <line x1="245" y1="200" x2="300" y2="200" stroke="var(--border-card)" stroke-width="1.5" stroke-dasharray="3,3"/>
+                    
+                    <!-- Gradient definitions -->
+                    <defs>
+                        <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--color-primary)"/>
+                            <stop offset="100%" stop-color="var(--color-secondary)"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <span class="section-tag" data-i18n="pillars_tag">Key Pillars</span>
+        <h2 class="section-title" data-i18n="pillars_title">Engineered for Clinical Precision</h2>
+        
+        <div class="features-grid">
+            <div class="glass-card primary-hover">
+                <div class="metric-icon-box" style="margin: 0 auto 20px auto;">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 12px;" data-i18n="feat_ai_title">AI Health Assessment</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;" data-i18n="feat_ai_desc">Multi-step health wizard evaluates demographics, medical readings, and lifestyle habits dynamically.</p>
+            </div>
+            
+            <div class="glass-card accent-hover">
+                <div class="metric-icon-box" style="margin: 0 auto 20px auto; background: linear-gradient(135deg, var(--color-accent), var(--color-primary));">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 12px;" data-i18n="feat_trends_title">Interactive Trends</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;" data-i18n="feat_trends_desc">Track metrics over time via multi-dimensional radar profiles and interactive time-series line graphs.</p>
+            </div>
+            
+            <div class="glass-card primary-hover">
+                <div class="metric-icon-box" style="margin: 0 auto 20px auto; background: linear-gradient(135deg, var(--color-secondary), var(--color-success));">
+                    <i class="fa-solid fa-file-medical"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 12px;" data-i18n="feat_advice_title">Actionable Advice</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;" data-i18n="feat_advice_desc">Instant clinician-friendly health scores and customized checklists to bring to your next consultation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section style="padding: 60px 20px; background: rgba(255, 255, 255, 0.02); border-y: 1px solid var(--border-card); margin-bottom: 80px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: center;">
+            <div>
+                <h2 style="font-size: 3rem; color: var(--color-primary); font-family: var(--font-heading);" data-i18n="stat_accuracy">99.4%</h2>
+                <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;" data-i18n="stat_accuracy_label">Model Evaluation Accuracy</p>
+            </div>
+            <div>
+                <h2 style="font-size: 3rem; color: var(--color-secondary); font-family: var(--font-heading);" data-i18n="stat_assessments">10k+</h2>
+                <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;" data-i18n="stat_assessments_label">Secure Health Assessments</p>
+            </div>
+            <div>
+                <h2 style="font-size: 3rem; color: var(--color-accent); font-family: var(--font-heading);" data-i18n="stat_auditing">&lt; 3s</h2>
+                <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;" data-i18n="stat_auditing_label">Instant Assessment Auditing</p>
+            </div>
+            <div>
+                <h2 style="font-size: 3rem; color: var(--color-success); font-family: var(--font-heading);" data-i18n="stat_encryption">256-Bit</h2>
+                <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;" data-i18n="stat_encryption_label">Firebase Secure Encryption</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section style="max-width: 1200px; margin: 0 auto 100px auto; padding: 0 20px; text-align: center;">
+        <span class="section-tag" data-i18n="stories_tag">User Stories</span>
+        <h2 class="section-title" data-i18n="stories_title">Heartwarming Health Journeys</h2>
+        
+        <div class="features-grid">
+            <div class="glass-card" style="text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                    <div class="user-avatar" style="background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));">DR</div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 600;" data-i18n="story_1_name">Dr. Richard Harrison</h4>
+                        <p style="color: var(--text-muted); font-size: 0.75rem;" data-i18n="story_1_role">Cardiovascular Specialist</p>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;" data-i18n="story_1_text">"WellnessInsight's risk scoring acts as a fantastic initial screen. The reports carry precisely the vital biomarkers we need to see during outpatient clinic visits."</p>
+            </div>
+            
+            <div class="glass-card" style="text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                    <div class="user-avatar" style="background: linear-gradient(135deg, var(--color-accent), var(--color-primary));">MS</div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 600;" data-i18n="story_2_name">Melissa Sterling</h4>
+                        <p style="color: var(--text-muted); font-size: 0.75rem;" data-i18n="story_2_role">User since 2025</p>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;" data-i18n="story_2_text">"This platform caught my elevated blood pressure patterns early. The custom exercise checklists kept me motivated, and my doctor was thoroughly impressed with the PDF logs."</p>
+            </div>
+            
+            <div class="glass-card" style="text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                    <div class="user-avatar" style="background: linear-gradient(135deg, var(--color-secondary), var(--color-success));">JP</div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 600;" data-i18n="story_3_name">James Patterson</h4>
+                        <p style="color: var(--text-muted); font-size: 0.75rem;" data-i18n="story_3_role">Health enthusiast</p>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;" data-i18n="story_3_text">"Highly interactive and visually stunning dashboards. The radar analytics gives a perfect birds-eye overview of my lifestyle metrics and risk vectors."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="border-top: 1px solid var(--border-card); background: rgba(0, 0, 0, 0.15); padding: 50px 20px 30px 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; margin-bottom: 40px;">
+            <div style="max-width: 320px;">
+                <a href="index.html" class="sidebar-logo" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
+                    <span data-i18n="logo_title">WellnessInsight</span>
+                </a>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;" data-i18n="footer_desc">A modern clinical intelligence dashboard helping you track wellness metrics and assess chronic risk factors seamlessly. Predict health risks early.</p>
+            </div>
+            <div style="display: flex; gap: 60px;">
+                <div>
+                    <h5 style="color: var(--text-primary); margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;" data-i18n="footer_platform">Platform</h5>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+                        <li><a href="signup.html" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_assessments">Assessments</a></li>
+                        <li><a href="login.html" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_dashboards">Dashboards</a></li>
+                        <li><a href="#" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_privacy">Data Privacy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color: var(--text-primary); margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;" data-i18n="footer_company">Company</h5>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+                        <li><a href="#" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_standards">Clinical Standards</a></li>
+                        <li><a href="#" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_tos">Terms of Service</a></li>
+                        <li><a href="#" style="color: var(--text-secondary); text-decoration: none;" data-i18n="footer_support">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-card); padding-top: 30px;">
+            <p data-i18n="footer_copyright">© 2026 WellnessInsight Health Predictor Systems. All Rights Reserved.</p>
+            <p data-i18n="footer_disclaimer">Disclaimer: Assessments are for wellness tracking and do not substitute professional medical diagnosis.</p>
+        </div>
+    </footer>
+
+    <!-- Theme Switch Script -->
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // Load initial theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.checked = savedTheme === 'light';
+
+        themeToggle.addEventListener('change', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html>
