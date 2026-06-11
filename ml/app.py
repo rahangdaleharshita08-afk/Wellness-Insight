@@ -36,6 +36,17 @@ except Exception as e:
     model_features = None
     models = {}
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        "status": "online",
+        "message": "Wellness-Insight ML API is running successfully!",
+        "endpoints": {
+            "health": "/health",
+            "predict": "/predict (POST)"
+        }
+    }), 200
+
 @app.route('/health', methods=['GET'])
 def health_check():
     if not models or not scaler:
