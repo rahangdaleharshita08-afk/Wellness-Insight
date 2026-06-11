@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Risk Analytics | WellnessInsight</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
+
 <body>
 
     <!-- Ambient Glowing Orbs -->
@@ -18,21 +20,22 @@
     </div>
 
     <div class="app-container">
-        
+
         <!-- Sidebar Navigation Drawer -->
         <aside class="sidebar">
             <a href="index.html" class="sidebar-logo">
                 <i class="fa-solid fa-heart-pulse" style="color: var(--color-primary);"></i>
                 <span>WellnessInsight</span>
             </a>
-            
+
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
                 <a href="assessment.html" class="nav-item"><i class="fa-solid fa-stethoscope"></i> Health Wizard</a>
-                <a href="analytics.html" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Risk Analytics</a>
+                <a href="analytics.html" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Risk
+                    Analytics</a>
                 <a href="profile.html" class="nav-item"><i class="fa-solid fa-user-doctor"></i> User Profile</a>
             </nav>
-            
+
             <div class="sidebar-footer">
                 <a href="profile.html" class="user-profile-badge">
                     <div class="user-avatar" id="sidebarAvatar">--</div>
@@ -41,13 +44,15 @@
                         <span class="user-role">Patient Member</span>
                     </div>
                 </a>
-                <a href="#" class="nav-item" id="logoutBtn" style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
+                <a href="#" class="nav-item" id="logoutBtn"
+                    style="color: var(--color-danger); margin-top: 10px; background: rgba(239, 68, 68, 0.05);"><i
+                        class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
             </div>
         </aside>
 
         <!-- Main Wrapper Panel -->
         <main class="main-wrapper">
-            
+
             <!-- Top Header Bar -->
             <header class="top-header">
                 <div class="header-title">
@@ -68,11 +73,15 @@
             </header>
 
             <!-- Chart Layout Grid -->
-            <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;" id="analyticsGrid">
-                
+            <section
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;"
+                id="analyticsGrid">
+
                 <!-- 1. Health Trend Timeline Line Chart -->
                 <div class="glass-card primary-hover" style="grid-column: span 2; min-height: 400px;">
-                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-chart-line" style="color: var(--color-primary);"></i> Health Index & BMI Evolution</h3>
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i
+                            class="fa-solid fa-chart-line" style="color: var(--color-primary);"></i> Health Index & BMI
+                        Evolution</h3>
                     <div style="position: relative; width: 100%; height: 320px;">
                         <canvas id="healthTrendChart"></canvas>
                     </div>
@@ -80,30 +89,40 @@
 
                 <!-- 2. Radar Risk Profile Chart -->
                 <div class="glass-card accent-hover" style="min-height: 400px;">
-                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-nodes" style="color: var(--color-accent);"></i> Multi-Disease Risk Profiler</h3>
-                    <div style="position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center;">
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i
+                            class="fa-solid fa-circle-nodes" style="color: var(--color-accent);"></i> Multi-Disease Risk
+                        Profiler</h3>
+                    <div
+                        style="position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center;">
                         <canvas id="radarRiskChart"></canvas>
                     </div>
                 </div>
 
                 <!-- 3. Biomarker Breakdown Doughnut Chart -->
                 <div class="glass-card primary-hover" style="min-height: 400px;">
-                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-chart-pie" style="color: var(--color-secondary);"></i> Diagnostic Risk Distribution</h3>
-                    <div style="position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center;">
+                    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;"><i
+                            class="fa-solid fa-chart-pie" style="color: var(--color-secondary);"></i> Diagnostic Risk
+                        Distribution</h3>
+                    <div
+                        style="position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center;">
                         <canvas id="doughnutRiskChart"></canvas>
                     </div>
                 </div>
-                
+
             </section>
 
             <!-- Error/Empty Warning Banner if no assessments exist -->
             <div id="noDataWarning" class="glass-card" style="display: none; text-align: center; padding: 60px 40px;">
-                <i class="fa-solid fa-chart-column" style="font-size: 3.5rem; color: var(--text-muted); margin-bottom: 20px; display: block;"></i>
+                <i class="fa-solid fa-chart-column"
+                    style="font-size: 3.5rem; color: var(--text-muted); margin-bottom: 20px; display: block;"></i>
                 <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Insufficient Analytical Data</h3>
-                <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 30px auto; line-height: 1.6;">We require at least one complete clinical assessment scan record to generate interactive charts, multi-disease profiles, and health score time-series trends.</p>
-                <a href="assessment.html" class="btn-primary"><i class="fa-solid fa-stethoscope"></i> Start First Assessment</a>
+                <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 30px auto; line-height: 1.6;">
+                    We require at least one complete clinical assessment scan record to generate interactive charts,
+                    multi-disease profiles, and health score time-series trends.</p>
+                <a href="assessment.html" class="btn-primary"><i class="fa-solid fa-stethoscope"></i> Start First
+                    Assessment</a>
             </div>
-            
+
         </main>
     </div>
 
@@ -112,4 +131,5 @@
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/analytics.js"></script>
 </body>
+
 </html>
