@@ -211,5 +211,6 @@ def predict():
         return jsonify({"error": f"Prediction server error: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    # Start on port 5001 to prevent conflicts with standard React/Server ports
+    # Start on port 5001 to prevent conflicts with standard React/Server port
+    port = int(os.environ.get("PORT", 5001))
     app.run(host='0.0.0.0', port=5001, debug=True)
